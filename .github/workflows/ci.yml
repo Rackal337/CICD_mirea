@@ -24,3 +24,24 @@ jobs:
         run: |
           source venv/bin/activate
           pytest
+
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const core = require('@actions/core');
+            const { Octokit } = require('@octokit/core');
+            const { create } = require('@octokit/plugin-graphql');
+            const { OctokitPluginTelegram } = require('octokit-plugin-telegram');
+
+            const octokit = new Octokit({
+              auth: ${{ secrets.GITHUB_TOKEN }},
+              plugins: [
+                OctokitPluginTelegram,
+              ],
+            });
+
+            octokit.telegram.sendMessage({
+              chat_id: '7147287402:AAE1zPQqOQgdr3xuhcHSDZcdqV4-cm1Yth4',
+              text: 'Тесты пройдены успешно! 💪',
+            });
+            core.info("Сообщение отправлено в Telegram");
